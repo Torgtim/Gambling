@@ -3,119 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Gambling Website</title>
+    <title>TG Tech Casino</title>
     <style>
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark-bg);
             color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 40px 20px;
+            margin: 0;
         }
+
+        h1 { color: var(--gold); text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             width: 100%;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
         }
+
+        /* --- ANIMASJONER --- */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, 0px) rotate(-5deg); }
+            40% { transform: translate(3px, 2px) rotate(5deg); }
+            60% { transform: translate(-3px, 1px) rotate(-5deg); }
+            80% { transform: translate(3px, 1px) rotate(5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes flip {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(1800deg); }
+        }
+
+        .animate-shake { animation: shake 0.4s; }
+        .animate-pulse { animation: pulse 0.5s ease-in-out; }
+
+        /* --- CARDS --- */
         .game-card {
-            background: #2d2d2d;
-            border: 2px solid #d4af37;
-            border-radius: 15px;
-            padding: 20px;
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 25px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.3s, border-color 0.3s;
+            position: relative;
+            overflow: hidden;
         }
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
+
+        /* --- HJULET MED PIL --- */
+        .wheel-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        .wheel-arrow {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; 
+            height: 0; 
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ff4444;
+            z-index: 10;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+        }
+        #wheel-canvas { border: 8px solid #333; border-radius: 50%; }
+
         button {
-            background: #d4af37;
+            background: linear-gradient(145deg, #d4af37, #b8962e);
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 10px;
+            color: #121212;
+            margin: 10px 5px;
+            transition: 0.2s;
         }
-        button:hover { background: #f1c40f; }
-        input { padding: 8px; border-radius: 5px; border: none; margin: 5px; }
+        button:hover:not(:disabled) { transform: scale(1.05); background: #f1c40f; }
+        button:disabled { background: #555; cursor: not-allowed; }
+
+        input {
+            background: #333; border: 1px solid #444; color: #fff;
+            padding: 10px; border-radius: 5px; margin-bottom: 10px; width: 80%;
+        }
+
+        .result { font-weight: bold; height: 1.5em; margin-top: 15px; color: var(--gold); }
+        .dice-container { font-size: 3.5rem; transition: 0.3s; }
         
-        /* Lykkehjul spesifikt */
-        #wheel-canvas { border: 5px solid #fff; border-radius: 50%; margin: 10px 0; }
-        
-        .result { font-size: 1.2rem; margin-top: 10px; color: #f1c40f; height: 1.5em; }
-        .dice-container { font-size: 3rem; }
+        footer {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #666;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>🎰 SUPER CASINO 2026 🎰</h1>
-    <p>Velkommen! (Dette er kun for underholdning, ingen ekte penger involvert).</p>
+    <h1>🎰 TG TECH CASINO 🎰</h1>
+    <p style="opacity: 0.7;">Premium Gambling Opplevelse</p>
 
     <div class="container">
         
         <div class="game-card">
-            <h3>🎡 Spinn Hjulet</h3>
-            <canvas id="wheel-canvas" width="250" height="250"></canvas>
-            <br>
-            <input type="text" id="wheel-items" value="Premie 1, Tap, Jackpot, Prøv Igjen" style="width: 80%;">
-            <br>
-            <button onclick="spinWheel()">SPINN!</button>
+            <h3>🎡 Lykkehjul</h3>
+            <div class="wheel-wrapper">
+                <div class="wheel-arrow"></div>
+                <canvas id="wheel-canvas" width="250" height="250"></canvas>
+            </div>
+            <input type="text" id="wheel-items" value="100kr, Tap, 500kr, Tap, JACKPOT, Prøv Igjen">
+            <button onclick="spinWheel()">SPINN NÅ</button>
             <div id="wheel-result" class="result"></div>
         </div>
 
-        <div class="game-card">
+        <div class="game-card" id="dice-card">
             <h3>🎲 Terningkast</h3>
             <div id="dice-display" class="dice-container">⚀</div>
-            <div id="dice-list"></div>
-            <button onclick="rollDice()">Kast Terning</button>
-            <button onclick="addDice()">+ Legg til terning</button>
-            <button onclick="resetDice()" style="background: #c0392b;">Reset</button>
+            <button onclick="rollDice()">Kast</button>
+            <button onclick="addDice()" style="background: #444; color: white;">+ Terning</button>
+            <div id="dice-result" class="result"></div>
         </div>
 
-        <div class="game-card">
+        <div class="game-card" id="coin-card">
             <h3>🪙 Myntkast</h3>
-            <div id="coin-visual" style="font-size: 3rem;">❓</div>
-            <button onclick="flipCoin()">Kron eller Mynt?</button>
+            <div id="coin-visual" style="font-size: 4rem; display: inline-block;">🪙</div>
+            <br>
+            <button onclick="flipCoin()">Kast Mynt</button>
             <div id="coin-result" class="result"></div>
         </div>
 
-        <div class="game-card">
-            <h3>🎰 Spilleautomat</h3>
-            <div id="slots" style="font-size: 2.5rem; letter-spacing: 10px;">❓ | ❓ | ❓</div>
-            <button onclick="playSlots()">Dra i spaken!</button>
+        <div class="game-card" id="slots-card">
+            <h3>🎰 Mega Slots</h3>
+            <div id="slots" style="font-size: 2.5rem; background: #121212; padding: 10px; border-radius: 10px;">🍒 | 🍒 | 🍒</div>
+            <button onclick="playSlots()">Spill</button>
             <div id="slots-result" class="result"></div>
         </div>
 
         <div class="game-card">
-            <h3>🃏 Høyere eller Lavere?</h3>
-            <p>Nåværende tall: <span id="hl-number" style="font-size: 1.5rem; color: #d4af37;">50</span></p>
+            <h3>🃏 High or Low</h3>
+            <p>Neste tall (0-100) er...</p>
+            <div id="hl-number" style="font-size: 3rem; color: var(--gold);">50</div>
             <button onclick="guessHL('higher')">Høyere ↑</button>
             <button onclick="guessHL('lower')">Lavere ↓</button>
             <div id="hl-result" class="result"></div>
         </div>
 
         <div class="game-card">
-            <h3>🚀 Crash (Multiplikator)</h3>
-            <div id="crash-multiplier" style="font-size: 2rem;">1.00x</div>
-            <button id="crash-btn" onclick="startCrash()">Start Flyvning</button>
-            <button id="cashout-btn" onclick="cashOut()" disabled>CASH OUT</button>
+            <h3>🚀 Crash Rocket</h3>
+            <div id="crash-multiplier" style="font-size: 3rem; margin: 20px 0;">1.00x</div>
+            <button id="crash-btn" onclick="startCrash()">Take Off</button>
+            <button id="cashout-btn" onclick="cashOut()" disabled style="background: #27ae60;">CASH OUT</button>
             <div id="crash-result" class="result"></div>
         </div>
 
-        <div class="game-card">
-            <h3>🔴 Velg Farge</h3>
-            <button onclick="betColor('Rød')" style="background: #e74c3c;">Rød</button>
-            <button onclick="betColor('Svart')" style="background: #2c3e50;">Svart</button>
-            <button onclick="betColor('Grønn')" style="background: #27ae60;">Grønn</button>
+        <div class="game-card" id="color-card">
+            <h3>🎨 Farge-Bet</h3>
+            <div style="margin-bottom: 15px;">
+                <button onclick="betColor('Rød')" style="background: #e74c3c; width: 60px; height: 40px;"></button>
+                <button onclick="betColor('Svart')" style="background: #000; color: white; border: 1px solid #444; width: 60px; height: 40px;"></button>
+                <button onclick="betColor('Grønn')" style="background: #2ecc71; width: 60px; height: 40px;"></button>
+            </div>
             <div id="color-result" class="result"></div>
         </div>
 
     </div>
 
+    <footer>Laget av TG tech ©</footer>
+
     <script>
-        // --- 1. LYKKEHJUL LOGIKK ---
+        // --- HJELPEFUNKSJON FOR ANIMASJON ---
+        function triggerAnim(id, animClass) {
+            const el = document.getElementById(id);
+            el.classList.remove(animClass);
+            void el.offsetWidth; // Force reflow
+            el.classList.add(animClass);
+        }
+
+        // --- 1. HJULET ---
         const canvas = document.getElementById('wheel-canvas');
         const ctx = canvas.getContext('2d');
         let currentRotation = 0;
@@ -124,18 +213,18 @@
             const items = document.getElementById('wheel-items').value.split(',');
             const sliceAngle = (2 * Math.PI) / items.length;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             items.forEach((item, i) => {
                 ctx.beginPath();
-                ctx.fillStyle = i % 2 === 0 ? '#d4af37' : '#2c3e50';
+                ctx.fillStyle = i % 2 === 0 ? '#d4af37' : '#2d2d2d';
                 ctx.moveTo(125, 125);
                 ctx.arc(125, 125, 120, i * sliceAngle, (i + 1) * sliceAngle);
                 ctx.fill();
                 ctx.save();
                 ctx.translate(125, 125);
                 ctx.rotate(i * sliceAngle + sliceAngle / 2);
-                ctx.fillStyle = "white";
-                ctx.fillText(item.trim(), 50, 5);
+                ctx.fillStyle = i % 2 === 0 ? "#121212" : "white";
+                ctx.font = "bold 12px Arial";
+                ctx.fillText(item.trim().substring(0, 10), 45, 5);
                 ctx.restore();
             });
         }
@@ -143,105 +232,116 @@
         document.getElementById('wheel-items').addEventListener('input', drawWheel);
 
         function spinWheel() {
-            const resultDiv = document.getElementById('wheel-result');
             const items = document.getElementById('wheel-items').value.split(',');
-            const randomSpin = Math.floor(Math.random() * 360) + 1440; 
-            currentRotation += randomSpin;
-            canvas.style.transition = "transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99)";
+            const extraDegrees = Math.floor(Math.random() * 360) + 1800; 
+            currentRotation += extraDegrees;
+            canvas.style.transition = "transform 4s cubic-bezier(0.15, 0, 0.15, 1)";
             canvas.style.transform = `rotate(${currentRotation}deg)`;
             
+            document.getElementById('wheel-result').innerText = "Snurrer...";
             setTimeout(() => {
-                const actualDegree = currentRotation % 360;
-                const index = Math.floor((360 - actualDegree) / (360 / items.length)) % items.length;
-                resultDiv.innerText = "Du vant: " + items[index].trim();
-            }, 3000);
+                const actualDegree = (currentRotation % 360);
+                // Pil er på toppen (-90 grader justering)
+                const index = Math.floor((360 - (actualDegree % 360) + 270) % 360 / (360 / items.length));
+                document.getElementById('wheel-result').innerText = "Landa på: " + items[index].trim();
+                triggerAnim('wheel-result', 'animate-pulse');
+            }, 4000);
         }
 
         // --- 2. TERNING ---
         let diceCount = 1;
         const diceIcons = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
         function rollDice() {
-            const display = document.getElementById('dice-display');
-            let results = [];
-            for(let i=0; i<diceCount; i++) {
-                results.push(diceIcons[Math.floor(Math.random() * 6)]);
-            }
-            display.innerText = results.join(' ');
+            triggerAnim('dice-display', 'animate-shake');
+            setTimeout(() => {
+                let res = [];
+                for(let i=0; i<diceCount; i++) res.push(diceIcons[Math.floor(Math.random()*6)]);
+                document.getElementById('dice-display').innerText = res.join(' ');
+            }, 200);
         }
         function addDice() { diceCount++; rollDice(); }
-        function resetDice() { diceCount = 1; rollDice(); }
 
-        // --- 3. MYNTKAST ---
+        // --- 3. MYNT ---
         function flipCoin() {
-            const res = Math.random() < 0.5 ? "KRON" : "MYNT";
-            document.getElementById('coin-visual').innerText = res === "KRON" ? "🟡" : "🥈";
-            document.getElementById('coin-result').innerText = "Det ble " + res + "!";
+            const visual = document.getElementById('coin-visual');
+            visual.style.animation = "flip 1s ease-out";
+            setTimeout(() => {
+                const win = Math.random() > 0.5;
+                visual.innerText = win ? "🟡" : "🥈";
+                document.getElementById('coin-result').innerText = win ? "KRON!" : "MYNT!";
+                visual.style.animation = "";
+            }, 1000);
         }
 
         // --- 4. SLOTS ---
-        const symbols = ['🍒', '🍋', '🔔', '💎', '7️⃣'];
         function playSlots() {
-            const s1 = symbols[Math.floor(Math.random()*5)];
-            const s2 = symbols[Math.floor(Math.random()*5)];
-            const s3 = symbols[Math.floor(Math.random()*5)];
-            document.getElementById('slots').innerText = `${s1} | ${s2} | ${s3}`;
-            if(s1 === s2 && s2 === s3) {
-                document.getElementById('slots-result').innerText = "JACKPOT! 🎉";
-            } else {
-                document.getElementById('slots-result').innerText = "Prøv igjen!";
-            }
+            const symbols = ['🍒', '💎', '7️⃣', '🍋', '⭐'];
+            const slotEl = document.getElementById('slots');
+            triggerAnim('slots', 'animate-shake');
+            
+            let count = 0;
+            let interval = setInterval(() => {
+                const s1 = symbols[Math.floor(Math.random()*5)];
+                const s2 = symbols[Math.floor(Math.random()*5)];
+                const s3 = symbols[Math.floor(Math.random()*5)];
+                slotEl.innerText = `${s1} | ${s2} | ${s3}`;
+                count++;
+                if(count > 10) {
+                    clearInterval(interval);
+                    if(s1 === s2 && s2 === s3) document.getElementById('slots-result').innerText = "JACKPOT! 🤑";
+                    else document.getElementById('slots-result').innerText = "Nesten...";
+                }
+            }, 100);
         }
 
         // --- 5. HØYERE/LAVERE ---
         let currentHL = 50;
         function guessHL(choice) {
-            const nextNum = Math.floor(Math.random() * 100);
-            let win = (choice === 'higher' && nextNum > currentHL) || (choice === 'lower' && nextNum < currentHL);
-            document.getElementById('hl-result').innerText = `Det ble ${nextNum}. ${win ? 'Du vant!' : 'Du tapte!'}`;
-            currentHL = nextNum;
+            const next = Math.floor(Math.random()*101);
+            const win = (choice==='higher' && next > currentHL) || (choice==='lower' && next < currentHL);
+            document.getElementById('hl-result').innerText = `Det ble ${next}. ${win ? 'Riktig! 🎉' : 'Feil! 💀'}`;
+            currentHL = next;
             document.getElementById('hl-number').innerText = currentHL;
+            triggerAnim('hl-number', 'animate-pulse');
         }
 
         // --- 6. CRASH ---
         let crashVal = 1.0;
         let crashInterval;
-        let isCrashed = false;
         function startCrash() {
-            isCrashed = false;
             crashVal = 1.0;
             document.getElementById('crash-result').innerText = "";
+            document.getElementById('crash-multiplier').style.color = "white";
             document.getElementById('crash-btn').disabled = true;
             document.getElementById('cashout-btn').disabled = false;
             
-            const limit = Math.random() * 5 + 1; // Crasher mellom 1 og 6
+            const boom = Math.random() * 4 + 1.1;
             crashInterval = setInterval(() => {
-                crashVal += 0.05;
+                crashVal += 0.02 * (crashVal);
                 document.getElementById('crash-multiplier').innerText = crashVal.toFixed(2) + "x";
-                if(crashVal >= limit) {
+                if(crashVal >= boom) {
                     clearInterval(crashInterval);
-                    isCrashed = true;
-                    document.getElementById('crash-multiplier').style.color = "red";
-                    document.getElementById('crash-result').innerText = "BOOM! Du crashet.";
+                    document.getElementById('crash-multiplier').style.color = "#ff4444";
+                    document.getElementById('crash-result').innerText = "BOOM!";
                     document.getElementById('crash-btn').disabled = false;
                     document.getElementById('cashout-btn').disabled = true;
+                    triggerAnim('crash-multiplier', 'animate-shake');
                 }
-            }, 100);
+            }, 80);
         }
         function cashOut() {
-            if(!isCrashed) {
-                clearInterval(crashInterval);
-                document.getElementById('crash-result').innerText = `Du cashet ut på ${crashVal.toFixed(2)}x!`;
-                document.getElementById('crash-btn').disabled = false;
-                document.getElementById('cashout-btn').disabled = true;
-            }
+            clearInterval(crashInterval);
+            document.getElementById('crash-result').innerText = `Du vant på ${crashVal.toFixed(2)}x!`;
+            document.getElementById('crash-btn').disabled = false;
+            document.getElementById('cashout-btn').disabled = true;
         }
 
-        // --- 7. FARGE-VELGER ---
-        function betColor(choice) {
-            const colors = ['Rød', 'Svart', 'Grønn'];
-            const r = Math.random();
-            const winningColor = r < 0.05 ? 'Grønn' : (r < 0.52 ? 'Rød' : 'Svart');
-            document.getElementById('color-result').innerText = `Vinnerfarge: ${winningColor}. ${choice === winningColor ? 'Gevinst!' : 'Tap.'}`;
+        // --- 7. FARGE ---
+        function betColor(color) {
+            const options = ['Rød', 'Svart', 'Grønn'];
+            const winColor = Math.random() < 0.1 ? 'Grønn' : (Math.random() > 0.5 ? 'Rød' : 'Svart');
+            document.getElementById('color-result').innerText = `Ballen landet på ${winColor}.`;
+            triggerAnim('color-result', 'animate-pulse');
         }
     </script>
 </body>
