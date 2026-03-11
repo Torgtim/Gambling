@@ -3,28 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TG Tech Casino - Ultimate Edition</title>
+    <title>TG Tech Casino - Extreme Edition</title>
     <style>
         :root {
-            --gold: #d4af37;
-            --dark-bg: #0f0f0f;
-            --card-bg: #1a1a1a;
-            --red: #e74c3c;
-            --green: #27ae60;
+            --gold: #ffcc00;
+            --dark-bg: #0a0a0a;
+            --card-bg: #151515;
+            /* Høy-kontrast farger for hjulet */
+            --wheel-1: #ff0000; /* Knall rød */
+            --wheel-2: #000000; /* Svart */
+            --wheel-3: #00ff00; /* Grønn */
+            --wheel-4: #0088ff; /* Blå */
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Arial Black', sans-serif;
             background-color: var(--dark-bg);
             color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 10px;
+            padding: 20px;
             margin: 0;
         }
-
-        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
 
         .container {
             max-width: 1200px;
@@ -34,119 +35,119 @@
             gap: 20px;
         }
 
-        /* --- CARDS --- */
         .game-card {
             background: var(--card-bg);
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 20px;
+            border: 3px solid #333;
+            border-radius: 20px;
+            padding: 25px;
             text-align: center;
-            transition: 0.3s;
             position: relative;
         }
-        .game-card:hover { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
 
-        /* --- ANIMASJONER --- */
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .animate-shake { animation: shake 0.2s ease-in-out infinite; }
-        .win-pulse { animation: pulse 0.5s ease-in-out; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); color: #fff; } 100% { transform: scale(1); } }
+        /* --- EKTE MYNT CSS --- */
+        .coin-container {
+            perspective: 1000px;
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+        }
+        #coin {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .coin-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 6px solid #b8860b;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        .heads { background: linear-gradient(45deg, #ffd700, #daa520); color: #5c4033; }
+        .tails { background: linear-gradient(45deg, #c0c0c0, #808080); color: #333; transform: rotateY(180deg); }
 
         /* --- HJULET --- */
-        .wheel-wrapper { position: relative; display: inline-block; margin: 15px 0; }
+        .wheel-wrapper { position: relative; margin: 20px 0; }
         .wheel-arrow {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent;
-            border-top: 30px solid var(--red); z-index: 10;
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent;
+            border-top: 35px solid #ff0000; z-index: 10; filter: drop-shadow(0 0 5px black);
         }
-        #wheel-canvas { border: 5px solid #333; border-radius: 50%; }
 
-        /* --- KNAPPER --- */
         button {
-            background: var(--gold); border: none; padding: 10px 15px; border-radius: 5px;
-            cursor: pointer; font-weight: bold; color: #000; margin: 5px; transition: 0.2s;
+            background: var(--gold); border: none; padding: 12px 20px; border-radius: 8px;
+            cursor: pointer; font-weight: bold; color: #000; margin: 5px; font-size: 1rem;
         }
-        button:hover:not(:disabled) { background: #f1c40f; transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
-        .btn-reset { background: #444; color: #fff; font-size: 0.8rem; }
-        .btn-reset:hover { background: #666; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        button:hover { filter: brightness(1.2); transform: scale(1.05); }
+        .btn-reset { background: #444; color: white; }
 
-        input { background: #222; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 5px; width: 80%; text-align: center; }
+        .display-box { 
+            font-size: 2.5rem; background: #000; padding: 20px; 
+            border-radius: 10px; margin: 15px 0; border: 1px solid #333;
+        }
 
-        .result { font-weight: bold; min-height: 1.5em; margin-top: 10px; color: var(--gold); font-size: 1.1rem; }
-        .display-box { font-size: 2.5rem; background: #000; padding: 15px; border-radius: 10px; margin: 10px 0; min-height: 60px; display: flex; justify-content: center; align-items: center; }
-        
-        footer { margin-top: 40px; font-size: 0.75rem; color: #555; }
+        footer { margin-top: 50px; opacity: 0.5; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <h1>🎰 TG TECH CASINO 🎰</h1>
-    <p style="margin-bottom: 30px; opacity: 0.6;">Ekte spenning, falske penger.</p>
+    <h1 style="color: var(--gold); font-size: 3rem; margin-bottom: 5px;">TG TECH CASINO</h1>
+    <p style="margin-bottom: 40px;">v4.0 Extreme Edition</p>
 
     <div class="container">
         
         <div class="game-card">
-            <h3>🎡 Customizable Wheel</h3>
+            <h3>🎡 High-Contrast Wheel</h3>
             <div class="wheel-wrapper">
                 <div class="wheel-arrow"></div>
-                <canvas id="wheel-canvas" width="240" height="240"></canvas>
+                <canvas id="wheel-canvas" width="280" height="280"></canvas>
             </div>
-            <input type="text" id="wheel-items" value="PREMIE, TAP, JACKPOT, TAP, BONUS">
-            <button onclick="spinWheel()">SPINN</button>
-            <div id="wheel-result" class="result"></div>
+            <input type="text" id="wheel-items" value="JACKPOT, TAP, 500kr, TAP, BONUS, TAP" style="width: 90%; background: #222; color: white; border: 1px solid #444; padding: 5px;">
+            <button onclick="spinWheel()">SPINN!</button>
+            <div id="wheel-result" style="color: var(--gold); font-weight: bold; margin-top: 10px;"></div>
         </div>
 
         <div class="game-card">
-            <h3>🎲 Terninger</h3>
+            <h3>🪙 Real Coin Flip</h3>
+            <div class="coin-container">
+                <div id="coin">
+                    <div class="coin-side heads">Kr</div>
+                    <div class="coin-side tails">M</div>
+                </div>
+            </div>
+            <button onclick="flipCoin()">KAST MYNT</button>
+            <button class="btn-reset" onclick="resetCoin()">RESET</button>
+            <div id="coin-result" style="color: var(--gold); margin-top: 10px; font-weight: bold;"></div>
+        </div>
+
+        <div class="game-card">
+            <h3>🎲 Dice</h3>
             <div id="dice-display" class="display-box">⚀</div>
-            <button onclick="rollDice()">Kast</button>
-            <button onclick="addDice()">+ Terning</button>
-            <button class="btn-reset" onclick="resetDice()">Reset</button>
-            <div id="dice-result" class="result"></div>
-        </div>
-
-        <div class="game-card">
-            <h3>🪙 Myntkast</h3>
-            <div id="coin-visual" class="display-box">🪙</div>
-            <button onclick="flipCoin()">Kast Mynt</button>
-            <button class="btn-reset" onclick="resetCoin()">Reset</button>
-            <div id="coin-result" class="result"></div>
-        </div>
-
-        <div class="game-card">
-            <h3>🎰 TG Slots</h3>
-            <div id="slots-display" class="display-box">🎰 | 🎰 | 🎰</div>
-            <button onclick="playSlots()">Spill</button>
-            <button class="btn-reset" onclick="resetSlots()">Reset</button>
-            <div id="slots-result" class="result"></div>
-        </div>
-
-        <div class="game-card">
-            <h3>🃏 High/Low</h3>
-            <div id="hl-number" class="display-box" style="color: var(--gold);">50</div>
-            <button onclick="guessHL('higher')">Høyere ↑</button>
-            <button onclick="guessHL('lower')">Lavere ↓</button>
-            <button class="btn-reset" onclick="resetHL()">Reset</button>
-            <div id="hl-result" class="result"></div>
+            <button onclick="rollDice()">KAST</button>
+            <button onclick="addDice()">+ TERNING</button>
+            <button class="btn-reset" onclick="resetDice()">RESET</button>
         </div>
 
         <div class="game-card">
             <h3>🚀 Crash Rocket</h3>
             <div id="crash-multiplier" class="display-box">1.00x</div>
-            <button id="crash-btn" onclick="startCrash()">Take Off</button>
-            <button id="cashout-btn" onclick="cashOut()" disabled style="background: var(--green);">CASH OUT</button>
-            <div id="crash-result" class="result"></div>
+            <button id="crash-btn" onclick="startCrash()">START FLYVNING</button>
+            <button id="cashout-btn" onclick="cashOut()" disabled style="background: #00ff00;">CASH OUT</button>
+            <div id="crash-result" style="font-weight: bold; margin-top: 10px;"></div>
         </div>
 
         <div class="game-card">
-            <h3>🎨 Farge-Bet</h3>
-            <div class="display-box" id="color-wheel">❓</div>
-            <button onclick="betColor('Rød')" style="background: var(--red);">Rød</button>
-            <button onclick="betColor('Svart')" style="background: #333; color: white;">Svart</button>
-            <button onclick="betColor('Grønn')" style="background: var(--green);">Grønn</button>
-            <div id="color-result" class="result"></div>
+            <h3>🎰 TG Slots</h3>
+            <div id="slots-display" class="display-box">🎰🎰🎰</div>
+            <button onclick="playSlots()">DRA I SPAKEN</button>
         </div>
 
     </div>
@@ -154,50 +155,45 @@
     <footer>Laget av TG tech ©</footer>
 
     <script>
-        // --- LYD-MOTOR (Web Audio API) ---
+        // --- LYD ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playSound(freq, type, duration, volume = 0.1) {
+        function playSound(freq, type, dur, vol) {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = type;
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + dur);
         }
 
-        // --- 1. HJULET (Med fargesjekk) ---
+        // --- 1. DET AVANSERTE HJULET ---
         const canvas = document.getElementById('wheel-canvas');
         const ctx = canvas.getContext('2d');
         let currentRotation = 0;
+        let isSpinning = false;
 
         function drawWheel() {
             const items = document.getElementById('wheel-items').value.split(',').map(i => i.trim());
-            const sliceAngle = (2 * Math.PI) / items.length;
-            const colors = ['#d4af37', '#2d2d2d', '#8e7932', '#444']; // Flere farger for å unngå like naboer
+            const slice = (2 * Math.PI) / items.length;
+            const colors = ['#ff0000', '#000000', '#00ff00', '#0088ff'];
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            items.forEach((item, i) => {
+            ctx.clearRect(0, 0, 280, 280);
+            items.forEach((text, i) => {
                 ctx.beginPath();
-                // Velger farge basert på index, men sjekker siste skive mot første
-                let colorIndex = i % colors.length;
-                if (i === items.length - 1 && colorIndex === 0) colorIndex = 1;
-
-                ctx.fillStyle = colors[colorIndex];
-                ctx.moveTo(120, 120);
-                ctx.arc(120, 120, 115, i * sliceAngle, (i + 1) * sliceAngle);
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.moveTo(140, 140);
+                ctx.arc(140, 140, 130, i * slice, (i + 1) * slice);
                 ctx.fill();
+                ctx.lineWidth = 2; ctx.strokeStyle = "#fff"; ctx.stroke();
                 
                 ctx.save();
-                ctx.translate(120, 120);
-                ctx.rotate(i * sliceAngle + sliceAngle / 2);
+                ctx.translate(140, 140);
+                ctx.rotate(i * slice + slice/2);
                 ctx.fillStyle = "#fff";
-                ctx.font = "bold 10px Arial";
-                ctx.fillText(item.substring(0, 8), 40, 5);
+                ctx.font = "bold 14px Arial";
+                ctx.fillText(text, 50, 5);
                 ctx.restore();
             });
         }
@@ -205,134 +201,131 @@
         document.getElementById('wheel-items').addEventListener('input', drawWheel);
 
         function spinWheel() {
-            const items = document.getElementById('wheel-items').value.split(',');
-            const spinAdd = Math.floor(Math.random() * 360) + 1800;
-            currentRotation += spinAdd;
-            canvas.style.transition = "transform 4s cubic-bezier(0.1, 0, 0.1, 1)";
-            canvas.style.transform = `rotate(${currentRotation}deg)`;
+            if(isSpinning) return;
+            isSpinning = true;
+            document.getElementById('wheel-result').innerText = "";
             
-            // Klikke-lyd mens hjulet snurrer
-            let clicks = 0;
-            const clickInterval = setInterval(() => {
-                if(clicks < 20) { playSound(600 - (clicks * 10), 'sine', 0.1, 0.05); clicks++; }
-                else clearInterval(clickInterval);
-            }, 150);
+            let speed = Math.random() * 0.2 + 0.3; // Tilfeldig startfart
+            let rotation = currentRotation;
+            const friction = 0.985; // Sakte ned gradvis
+            const items = document.getElementById('wheel-items').value.split(',');
+            const sliceDeg = 360 / items.length;
+            
+            let lastSegment = -1;
 
-            setTimeout(() => {
-                const actualDegree = (currentRotation % 360);
-                const index = Math.floor((360 - (actualDegree % 360) + 270) % 360 / (360 / items.length));
-                document.getElementById('wheel-result').innerText = "Vinner: " + items[index].trim();
-                playSound(880, 'square', 0.3, 0.1);
-            }, 4000);
+            function animate() {
+                speed *= friction;
+                rotation += speed;
+                canvas.style.transform = `rotate(${rotation}rad)`;
+
+                // Tikk-lyd logikk: Sjekk når en ny sektor passerer toppen (270 grader / -1.57 rad)
+                const currentDeg = (rotation * (180/Math.PI)) % 360;
+                const segment = Math.floor((360 - (currentDeg + 90) % 360) / sliceDeg);
+                
+                if(segment !== lastSegment) {
+                    playSound(600, 'sine', 0.05, 0.1); // TIKK!
+                    lastSegment = segment;
+                }
+
+                if(speed > 0.001) {
+                    requestAnimationFrame(animate);
+                } else {
+                    isSpinning = false;
+                    currentRotation = rotation;
+                    const finalIndex = Math.floor((360 - (currentDeg + 90) % 360) / sliceDeg) % items.length;
+                    document.getElementById('wheel-result').innerText = "LANDET PÅ: " + items[finalIndex].trim();
+                    playSound(1000, 'square', 0.3, 0.1);
+                }
+            }
+            animate();
         }
 
-        // --- 2. TERNING ---
-        let diceCount = 1;
-        function rollDice() {
-            playSound(200, 'sawtooth', 0.1);
-            const el = document.getElementById('dice-display');
-            el.classList.add('animate-shake');
-            setTimeout(() => {
-                const icons = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
-                let res = [];
-                for(let i=0; i<diceCount; i++) res.push(icons[Math.floor(Math.random()*6)]);
-                el.innerText = res.join(' ');
-                el.classList.remove('animate-shake');
-            }, 300);
-        }
-        function addDice() { diceCount++; rollDice(); }
-        function resetDice() { diceCount = 1; document.getElementById('dice-display').innerText = '⚀'; }
-
-        // --- 3. MYNT ---
+        // --- 2. EKTE MYNT ---
+        let coinRotation = 0;
         function flipCoin() {
-            const v = document.getElementById('coin-visual');
-            v.style.transform = "rotateY(720deg)";
-            v.style.transition = "1s";
-            playSound(400, 'sine', 0.2);
+            const coin = document.getElementById('coin');
+            const resultText = document.getElementById('coin-result');
+            const isHeads = Math.random() > 0.5;
+            
+            coinRotation += 1800 + (isHeads ? 0 : 180); 
+            coin.style.transform = `rotateY(${coinRotation}deg)`;
+            
+            playSound(400, 'sine', 0.1, 0.1);
+            
             setTimeout(() => {
-                const isKron = Math.random() > 0.5;
-                v.innerText = isKron ? "🟡" : "🥈";
-                document.getElementById('coin-result').innerText = isKron ? "KRON!" : "MYNT!";
-                v.style.transform = "rotateY(0deg)";
-                v.style.transition = "0s";
+                resultText.innerText = isHeads ? "DET BLE KRON!" : "DET BLE MYNT!";
+                playSound(800, 'sine', 0.2, 0.1);
             }, 1000);
         }
-        function resetCoin() { document.getElementById('coin-visual').innerText = "🪙"; document.getElementById('coin-result').innerText = ""; }
-
-        // --- 4. SLOTS ---
-        function playSlots() {
-            const sym = ['🍒', '💎', '7️⃣', '⭐', '🔔'];
-            const display = document.getElementById('slots-display');
-            display.classList.add('animate-shake');
-            let i = 0;
-            const iv = setInterval(() => {
-                display.innerText = `${sym[Math.floor(Math.random()*5)]} | ${sym[Math.floor(Math.random()*5)]} | ${sym[Math.floor(Math.random()*5)]}`;
-                playSound(300 + (i*50), 'sine', 0.05, 0.02);
-                if(i++ > 10) {
-                    clearInterval(iv);
-                    display.classList.remove('animate-shake');
-                    if(display.innerText.split('|')[0] === display.innerText.split('|')[2]) {
-                        playSound(1000, 'square', 0.5);
-                        document.getElementById('slots-result').innerText = "GEVINST!";
-                    }
-                }
-            }, 100);
+        function resetCoin() {
+            coinRotation = 0;
+            document.getElementById('coin').style.transform = `rotateY(0deg)`;
+            document.getElementById('coin-result').innerText = "";
         }
-        function resetSlots() { document.getElementById('slots-display').innerText = "🎰 | 🎰 | 🎰"; }
 
-        // --- 5. HIGH/LOW ---
-        let currentHL = 50;
-        function guessHL(type) {
-            const next = Math.floor(Math.random()*101);
-            const win = (type === 'higher' && next > currentHL) || (type === 'lower' && next < currentHL);
-            document.getElementById('hl-number').innerText = next;
-            document.getElementById('hl-result').innerText = win ? "RIKTIG! 📈" : "FEIL! 📉";
-            playSound(win ? 800 : 150, 'sine', 0.2);
-            currentHL = next;
+        // --- 3. TERNINGER ---
+        let dCount = 1;
+        function rollDice() {
+            const d = document.getElementById('dice-display');
+            playSound(150, 'sawtooth', 0.1, 0.1);
+            d.style.transform = "scale(1.2) rotate(10deg)";
+            setTimeout(() => {
+                const icons = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+                let r = []; for(let i=0; i<dCount; i++) r.push(icons[Math.floor(Math.random()*6)]);
+                d.innerText = r.join(' ');
+                d.style.transform = "scale(1) rotate(0deg)";
+            }, 200);
         }
-        function resetHL() { currentHL = 50; document.getElementById('hl-number').innerText = "50"; }
+        function addDice() { dCount++; rollDice(); }
+        function resetDice() { dCount = 1; document.getElementById('dice-display').innerText = "⚀"; }
 
-        // --- 6. CRASH ---
-        let crashVal = 1.0;
-        let crashInterval;
+        // --- 4. CRASH (Med farge-fix) ---
+        let cVal = 1.0;
+        let cInt;
         function startCrash() {
-            crashVal = 1.0;
-            const btn = document.getElementById('crash-btn');
-            const co = document.getElementById('cashout-btn');
-            btn.disabled = true; co.disabled = false;
-            document.getElementById('crash-result').innerText = "";
-            const boom = Math.random() * 5 + 1.1;
-
-            crashInterval = setInterval(() => {
-                crashVal += 0.02 * crashVal;
-                document.getElementById('crash-multiplier').innerText = crashVal.toFixed(2) + "x";
-                playSound(100 + (crashVal * 50), 'triangle', 0.1, 0.02);
-                
-                if(crashVal >= boom) {
-                    clearInterval(crashInterval);
-                    playSound(50, 'sawtooth', 0.5, 0.2); // BOOM LYD
-                    document.getElementById('crash-multiplier').style.color = "red";
-                    document.getElementById('crash-result').innerText = "CRASHED!";
-                    btn.disabled = false; co.disabled = true;
+            cVal = 1.0;
+            const disp = document.getElementById('crash-multiplier');
+            const res = document.getElementById('crash-result');
+            disp.style.color = "white"; // RESET FARGE TIL HVIT
+            res.innerText = "";
+            document.getElementById('crash-btn').disabled = true;
+            document.getElementById('cashout-btn').disabled = false;
+            
+            const limit = Math.random() * 4 + 1.1;
+            cInt = setInterval(() => {
+                cVal += cVal * 0.02;
+                disp.innerText = cVal.toFixed(2) + "x";
+                playSound(100 + (cVal*40), 'triangle', 0.1, 0.03);
+                if(cVal >= limit) {
+                    clearInterval(cInt);
+                    disp.style.color = "red";
+                    res.innerText = "BOOM! DU CRASHET.";
+                    playSound(60, 'sawtooth', 0.6, 0.2);
+                    document.getElementById('crash-btn').disabled = false;
+                    document.getElementById('cashout-btn').disabled = true;
                 }
             }, 100);
         }
         function cashOut() {
-            clearInterval(crashInterval);
-            playSound(1200, 'sine', 0.3);
-            document.getElementById('crash-result').innerText = "CASHED OUT!";
+            clearInterval(cInt);
+            document.getElementById('crash-result').innerText = "GEVINST: " + cVal.toFixed(2) + "x";
             document.getElementById('crash-btn').disabled = false;
             document.getElementById('cashout-btn').disabled = true;
+            playSound(1200, 'sine', 0.3, 0.1);
         }
 
-        // --- 7. FARGE ---
-        function betColor(choice) {
-            const colors = ['Rød', 'Svart', 'Grønn'];
-            const res = Math.random() < 0.05 ? 'Grønn' : (Math.random() > 0.5 ? 'Rød' : 'Svart');
-            const visual = document.getElementById('color-wheel');
-            visual.innerText = res === 'Rød' ? '🔴' : (res === 'Svart' ? '⚫' : '🟢');
-            document.getElementById('color-result').innerText = res === choice ? "DU VANT!" : "TAP.";
-            playSound(res === choice ? 900 : 200, 'sine', 0.2);
+        // --- 5. SLOTS ---
+        function playSlots() {
+            const icons = ['🍒', '🍋', '⭐', '💎', '7️⃣'];
+            const disp = document.getElementById('slots-display');
+            let count = 0;
+            const interval = setInterval(() => {
+                disp.innerText = icons[Math.floor(Math.random()*5)] + icons[Math.floor(Math.random()*5)] + icons[Math.floor(Math.random()*5)];
+                playSound(200 + (count*50), 'square', 0.05, 0.02);
+                if(count++ > 15) {
+                    clearInterval(interval);
+                }
+            }, 80);
         }
     </script>
 </body>
